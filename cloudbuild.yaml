@@ -1,0 +1,37 @@
+steps:
+# Build Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '-t'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/flask-app:$SHORT_SHA'
+  - './app'
+
+# Push to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'push'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/flask-app:$SHORT_SHA'
+
+# Deploy with Helm
+- name: 'gcr.io/$PROJECT_ID/helm'
+  args:
+  - 'upgrade'
+  - '--install'
+  - 'flask-app'
+  - './helm/flask-app'
+  - '--set'
+  - 'image.repository=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/flask-app'
+  - '--set'
+  - 'image.tag=$SHORT_SHA'
+  env:
+  - 'CLOUDSDK_COMPUTE_REGION=${_REGION}'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
+substitutions:
+  _REGION: 'us-central1'
+  _REPO_NAME: 'flask-app-repo'
+  _CLUSTER_NAME: 'gke-hpa-cluster'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

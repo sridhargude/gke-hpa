@@ -1,0 +1,27 @@
+# terraform.tfvars.example
+# Copy this file to terraform.tfvars and update with your values
+
+project_id   = "sgude-gke"
+region       = "us-central1"
+cluster_name = "gke-hpa-cluster"
+environment  = "dev"
+
+# Network configuration
+subnet_cidr   = "10.0.0.0/24"
+pods_cidr     = "10.1.0.0/16"
+services_cidr = "10.2.0.0/16"
+
+# Node configuration
+machine_type   = "e2-medium"
+node_count     = 2
+min_node_count = 1
+max_node_count = 5
+disk_size_gb   = 50
+preemptible    = false
+
+# Labels
+labels = {
+  managed_by = "terraform"
+  project    = "gke-hpa"
+  team       = "platform"
+}
