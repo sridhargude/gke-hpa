@@ -30,7 +30,7 @@ steps:
 
 substitutions:
   _REGION: 'us-central1'
-  _REPO_NAME: 'flask-app-repo'
+  _REPO_NAME: 'flask-app-repo-ci-cd'
   _CLUSTER_NAME: 'gke-hpa-cluster'
 
 options:
